@@ -12,7 +12,7 @@ func main() {
 	port := flag.Int("p", 1189, "listen port")
 	download := flag.String("f", "", "download file path")
 	text := flag.String("s", "", "return text")
-	directory := flag.String("d", "", "directory path")
+	directory := flag.String("d", ".", "directory path")
 	flag.Parse()
 
 	e := gin.New()
@@ -23,13 +23,11 @@ func main() {
 			c.Header("Content-Type", "application/octet-stream")
 			c.File(*download)
 		})
-	}
-	if *text != "" {
+	} else if *text != "" {
 		e.GET("/", func(c *gin.Context) {
 			c.String(200, *text)
 		})
-	}
-	if *directory != "" {
+	} else if *directory != "" {
 		e.Static("/", *directory)
 	}
 	_ = e.Run(fmt.Sprintf(":%d", *port))
